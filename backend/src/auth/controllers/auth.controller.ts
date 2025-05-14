@@ -105,20 +105,23 @@ export class AuthController {
       }
 
       const token = generateToken(userExists!.id);
-      res.cookie("access_token", token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-      });
+
       const { password: pass, ...rest } = userExists!;
-      res.status(200).json({
-        //! COMENTAAR
-        token,
-        user: rest,
-        ok: true,
-        message: "User logged in successfully",
-      });
+      res
+        .cookie("access_token", token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "strict",
+          maxAge: 7 * 24 * 60 * 60 * 1000,
+        })
+        .status(200)
+        .json({
+          //! COMENTAAR
+          token,
+          user: rest,
+          ok: true,
+          message: "User logged in successfully",
+        });
     } catch (error) {
       next(error);
     }
