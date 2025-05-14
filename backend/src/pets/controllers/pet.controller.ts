@@ -9,21 +9,9 @@ export class PetController {
     next: NextFunction
   ): Promise<void> => {
     console.log("getPets");
-    const token = req.cookies.access_token;
+    const decodedToken = (req as any).decodedToken;
+    console.log(decodedToken);
     try {
-      if (!token) {
-        const error = new Error(ERROR_MESSAGES.TOKEN_NOT_PROVIDED.message);
-        (error as any).status = ERROR_MESSAGES.TOKEN_NOT_PROVIDED.code;
-        throw error;
-      }
-
-      const decodedToken = verifyToken(token);
-      if (!decodedToken) {
-        const error = new Error(ERROR_MESSAGES.UNAUTHORIZED.message);
-        (error as any).status = ERROR_MESSAGES.UNAUTHORIZED.code;
-        throw error;
-      }
-
       const pets = await prisma.pet.findMany({
         where: { ownerId: (decodedToken as any).payload },
         include: {
@@ -51,21 +39,9 @@ export class PetController {
   ): Promise<void> => {
     console.log("addPet");
     const pet = req.body;
-    const token = req.cookies.access_token;
+    const decodedToken = (req as any).decodedToken;
+
     try {
-      if (!token) {
-        const error = new Error(ERROR_MESSAGES.TOKEN_NOT_PROVIDED.message);
-        (error as any).status = ERROR_MESSAGES.TOKEN_NOT_PROVIDED.code;
-        throw error;
-      }
-
-      const decodedToken = verifyToken(token);
-      if (!decodedToken) {
-        const error = new Error(ERROR_MESSAGES.UNAUTHORIZED.message);
-        (error as any).status = ERROR_MESSAGES.UNAUTHORIZED.code;
-        throw error;
-      }
-
       const user = await prisma.user.findUnique({
         where: { id: (decodedToken as any).payload },
       });
@@ -93,23 +69,11 @@ export class PetController {
     next: NextFunction
   ): Promise<void> => {
     console.log("deletePet");
-    const token = req.cookies.access_token;
+    const decodedToken = (req as any).decodedToken;
+
     const { id } = req.params;
 
     try {
-      if (!token) {
-        const error = new Error(ERROR_MESSAGES.TOKEN_NOT_PROVIDED.message);
-        (error as any).status = ERROR_MESSAGES.TOKEN_NOT_PROVIDED.code;
-        throw error;
-      }
-
-      const decodedToken = verifyToken(token);
-      if (!decodedToken) {
-        const error = new Error(ERROR_MESSAGES.UNAUTHORIZED.message);
-        (error as any).status = ERROR_MESSAGES.UNAUTHORIZED.code;
-        throw error;
-      }
-
       const user = await prisma.user.findUnique({
         where: { id: (decodedToken as any).payload },
       });
@@ -148,23 +112,10 @@ export class PetController {
     next: NextFunction
   ): Promise<void> => {
     console.log("getPetById");
-    const token = req.cookies.access_token;
     const { id } = req.params;
+    const decodedToken = (req as any).decodedToken;
 
     try {
-      if (!token) {
-        const error = new Error(ERROR_MESSAGES.TOKEN_NOT_PROVIDED.message);
-        (error as any).status = ERROR_MESSAGES.TOKEN_NOT_PROVIDED.code;
-        throw error;
-      }
-
-      const decodedToken = verifyToken(token);
-      if (!decodedToken) {
-        const error = new Error(ERROR_MESSAGES.UNAUTHORIZED.message);
-        (error as any).status = ERROR_MESSAGES.UNAUTHORIZED.code;
-        throw error;
-      }
-
       const user = await prisma.user.findUnique({
         where: { id: (decodedToken as any).payload },
       });
@@ -223,25 +174,11 @@ export class PetController {
     next: NextFunction
   ): Promise<void> => {
     console.log("updatePet");
-    const token = req.cookies.access_token;
     const { id } = req.params;
-
+    const decodedToken = (req as any).decodedToken;
     // const { titulo, descripcion, estado } = req.body;
 
     try {
-      if (!token) {
-        const error = new Error(ERROR_MESSAGES.TOKEN_NOT_PROVIDED.message);
-        (error as any).status = ERROR_MESSAGES.TOKEN_NOT_PROVIDED.code;
-        throw error;
-      }
-
-      const decodedToken = verifyToken(token);
-      if (!decodedToken) {
-        const error = new Error(ERROR_MESSAGES.UNAUTHORIZED.message);
-        (error as any).status = ERROR_MESSAGES.UNAUTHORIZED.code;
-        throw error;
-      }
-
       const user = await prisma.user.findUnique({
         where: { id: (decodedToken as any).payload },
       });

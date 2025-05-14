@@ -5,6 +5,7 @@ import { authRoutes } from "./src/auth/routes/auth.routes";
 import { petRoutes } from "./src/pets/routes/pet.routes";
 import { seedRoutes } from "./src/seed/seed.route";
 import cors from "cors";
+import { authenticateToken } from "./src/utils";
 
 dotenv.config();
 
@@ -24,8 +25,9 @@ app.use(
 const PORT = process.env.PORT || 3000;
 
 app.use("/api/auth", authRoutes);
-app.use("/api/pets", petRoutes);
-app.use("/api/seed", seedRoutes);
+
+app.use("/api/pets", authenticateToken, petRoutes);
+app.use("/api/seed", authenticateToken, seedRoutes);
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   console.error("Error: " + err.message);
