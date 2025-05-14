@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Pet" ALTER COLUMN "urlImage" DROP NOT NULL;
