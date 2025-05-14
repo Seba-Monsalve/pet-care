@@ -35,11 +35,15 @@ export const useAuthStore = create<StoreState>()(
       }) => {
         set({ isLoading: true, message: null, error: null });
         try {
-          const res = await userApi.post(`auth/signup`, {
-            username,
-            email,
-            password,
-          });
+          const res = await userApi.post(
+            `auth/signup`,
+            {
+              username,
+              email,
+              password,
+            },
+            { withCredentials: true }
+          );
 
           if (!res.data.ok) {
             set({ user: null, isLoading: false, message: res.data.message });
@@ -62,10 +66,16 @@ export const useAuthStore = create<StoreState>()(
       login: async ({ email, password }) => {
         set({ isLoading: true, message: null, error: null });
         try {
-          const res = await userApi.post(`auth/login`, {
-            email,
-            password,
-          });
+          const res = await userApi.post(
+            `auth/login`,
+            {
+              email,
+              password,
+            },
+            {
+              withCredentials: true,
+            }
+          );
 
           const { user, message, ok, error } = res.data;
 
@@ -121,7 +131,9 @@ export const useAuthStore = create<StoreState>()(
       logout: async () => {
         set({ user: null, error: null, message: null, isLoading: true });
         try {
-          const res = await userApi.post(`auth/logout`);
+          const res = await userApi.post(`auth/logout`, {
+            withCredentials: true,
+          });
           const { message } = res.data;
           set({ message, isLoading: false, user: null });
           return { message };
