@@ -30,7 +30,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/pets", authenticateToken, petRoutes);
 app.use("/api/seed", authenticateToken, seedRoutes);
 
-app.use(express.static(path.join(__dirname, "../frontend/dist")));
+app.use(express.static(`${process.env.FRONTEND_BUILD}`));
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   console.error("Error: " + err.message);
