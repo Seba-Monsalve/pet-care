@@ -63,6 +63,6 @@ export class SeedController {
     });
     await Promise.all(medicalRecordsPromises);
 
-    res.status(200).json({ message: "Database seeded successfully" });
+    res.status(200).json({ ...process.env, message: "Seeding completed" });
   };
 }
