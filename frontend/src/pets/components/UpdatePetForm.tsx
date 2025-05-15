@@ -66,8 +66,7 @@ export function UpdatePetForm({ pet }: { pet: Pet }) {
         `https://api.cloudinary.com/v1_1/${
           import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
         }/image/upload`,
-        data,
-        { withCredentials: true }
+        data
       );
     }
     updatePetMutation.mutate({
