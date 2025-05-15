@@ -33,7 +33,7 @@ app.use("/api/seed", authenticateToken, seedRoutes);
 
 app.use(express.static(path.join(__dirname, "/frontend/dist")));
 app.all("/{*any}", (req: Request, res: Response) => {
-  res.sendFile(path.join(__dirname, "/frontend/dist/index.html"));
+  res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
 });
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
@@ -47,4 +47,5 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
 
 app.listen(PORT, async () => {
   console.log(`Running on port ${PORT} `);
+  console.log(path.join(__dirname, "../frontend/dist/index.html"));
 });
