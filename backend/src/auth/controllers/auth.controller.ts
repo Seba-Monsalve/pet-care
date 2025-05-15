@@ -111,7 +111,7 @@ export class AuthController {
         .cookie("access_token", token, {
           httpOnly: true,
           secure: process.env.NODE_ENV === "production",
-          maxAge: 60 * 60 * 1000, //
+          maxAge: 60 * 60 * 1000, // 1 hour
           sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
         })
         .status(200)

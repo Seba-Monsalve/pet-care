@@ -25,11 +25,12 @@ import { usePrefetchPet } from "../hooks/usePrefetchPet";
 
 export default function PetsPage() {
   const { petsQuery } = usePets();
-
-  const { data: pets, isFetching } = petsQuery;
   const navigate = useNavigate();
-
   const prefetchPet = usePrefetchPet();
+
+  const { data: pets, isFetching, error } = petsQuery;
+
+  if (error) navigate("/");
 
   if (isFetching) {
     return <Loading />;
