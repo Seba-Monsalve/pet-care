@@ -78,9 +78,15 @@ export const usePetMutation = () => {
       // console.log("optimisticPet", optimisticPet);
       queryClient.setQueryData(["pets", {}], (oldData: any) => {
         if (oldData) {
-          return [...oldData, optimisticPet];
+          oldData.map((insertedPet: Pet) => {
+            if (insertedPet.id === id) {
+              return { ...insertedPet, ...optimisticPet };
+            }
+            return insertedPet;
+          });
+
         }
-        return [optimisticPet];
+        return oldData;
       });
       queryClient.setQueryData(["pet", { petId: optimisticPet.id }], (oldData) => {
         if (oldData) {
