@@ -70,10 +70,12 @@ export const usePetMutation = () => {
   const updatePetMutation = useMutation({
     mutationFn: updatePetAction,
     onMutate: async (data) => {
-      const optimisticPet = {
-        ...data,
-      };
 
+      const { id, pet } = data;
+      const optimisticPet = {
+        id, ...pet
+      };
+      // console.log("optimisticPet", optimisticPet);
       queryClient.setQueryData(["pets", {}], (oldData: any) => {
         if (oldData) {
           return [...oldData, optimisticPet];
@@ -88,6 +90,8 @@ export const usePetMutation = () => {
       return { optimisticPet };
     },
     onSuccess: (newPet, _, __) => {
+      // console.log("Actualizado", optimisticPet);
+
       queryClient.setQueryData(["pet", { petId: newPet.id }], () => {
         return newPet;
       });
