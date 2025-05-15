@@ -63,8 +63,7 @@ export function UpdatePetForm({ pet }: { pet: Pet }) {
       );
       data.append("cloud_name", import.meta.env.VITE_CLOUDINARY_CLOUD_NAME);
       res = await axios.post(
-        `https://api.cloudinary.com/v1_1/${
-          import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
+        `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
         }/image/upload`,
         data
       );
@@ -74,7 +73,11 @@ export function UpdatePetForm({ pet }: { pet: Pet }) {
         weight: +weight,
         dob,
         urlImage: res?.data.secure_url || pet.urlImage,
+
+        vaccinationHistory: pet.vaccinationHistory,
+        medicalRecord: pet.medicalRecord,
         ...rest,
+
       },
       id: pet.id,
     });
@@ -112,10 +115,10 @@ export function UpdatePetForm({ pet }: { pet: Pet }) {
                 urlImage && urlImage.length > 0
                   ? URL.createObjectURL(urlImage[0])
                   : pet.urlImage
-                  ? pet.urlImage
-                  : species
-                  ? `/assets/images/${species.toLowerCase()}.jpg`
-                  : `/assets/images/none.jpg`
+                    ? pet.urlImage
+                    : species
+                      ? `/assets/images/${species.toLowerCase()}.jpg`
+                      : `/assets/images/none.jpg`
               }
               alt="Imagen de la mascota"
               className="h-50 w-50 rounded-lg object-cover "

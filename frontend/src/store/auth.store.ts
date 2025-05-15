@@ -9,11 +9,10 @@ interface StoreState {
   error: null | string;
   message: null | string;
   isFetchingUser: boolean;
-  signUp: ({}: { username: string; email: string; password: string }) => void;
-  login: ({}: { email: string; password: string }) => any | void;
+  signUp: ({username,email,password}:{ username: string; email: string; password: string }) => void;
+  login: ({email,password}: { email: string; password: string }) => Promise<any>;
   fetchUser: () => void;
-  logout: () => any;
-}
+  logout: () => void;}
 
 export const useAuthStore = create<StoreState>()(
   persist(

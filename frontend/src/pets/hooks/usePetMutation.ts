@@ -81,7 +81,9 @@ export const usePetMutation = () => {
         }
         return [optimisticPet];
       });
-
+  queryClient.setQueryData(["pet", { petId: optimisticPet.id }], () => {
+        return optimisticPet;
+      });
       return { optimisticPet };
     },
     onSuccess: (newPet, _, __) => {
