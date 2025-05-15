@@ -25,12 +25,16 @@ app.use(
 
 const PORT = process.env.PORT || 3000;
 
-app.use("/api/auth", authRoutes);
+const __dirname = path.resolve();
 
+app.use("/api/auth", authRoutes);
 app.use("/api/pets", authenticateToken, petRoutes);
 app.use("/api/seed", authenticateToken, seedRoutes);
 
-app.use(express.static(`${process.env.FRONTEND_BUILD}`));
+app.use(express.static(path.join(__dirname, "/frontend/dist")));
+app.all("/{*any}", (req: Request, res: Response) => {
+  res.sendFile(path.join(__dirname, "/frontend/dist/index.html"));
+});
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   console.error("Error: " + err.message);
@@ -41,9 +45,6 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   });
 });
 
-app.get("*", (req: Request, res: Response) => {
-  res.sendFile(path.join(__dirname, "../client/build/index.html"));
-});
 app.listen(PORT, async () => {
   console.log(`Running on port ${PORT} `);
 });

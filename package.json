@@ -7,12 +7,12 @@
   "main": "index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": " npx tsx index.ts",
-    "start:db": "npx prisma migrate deploy && npx prisma generate && npx tsx index.ts",
+    "start": " npx tsx backend/index.ts",
+    "start:db": "npx prisma migrate deploy && npx prisma generate && npx tsx backend/index.ts",
     "dev:db": "npx prisma migrate deploy && npx prisma generate ",
     "db:deploy": "npx prisma migrate deploy && npx prisma generate",
-    "dev": "npx prisma migrate deploy && npx prisma generate && npx tsx watch ./index.ts",
-    "build": "npm i && npm i -- prefix ./frontend && npm run build --prefix ./frontend"
+    "dev": "npx prisma migrate deploy && npx prisma generate && npx tsx watch /backend/index.ts",
+    "build": "npm install && npm install --prefix frontend && npm run build --prefix frontend"
   },
   "dependencies": {
     "@prisma/client": "^6.6.0",
