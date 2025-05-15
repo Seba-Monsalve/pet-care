@@ -48,30 +48,15 @@ export const PetPage = () => {
   const pet = petQuery.data;
 
   async function onDelete() {
-    try {
-      await deletePetMutation.mutate(petId!);
-      navigate("/dashboard/");
-      toast.success("Mascota eliminada correctamente", {
-        icon: <PawPrintIcon className="h-5 w-5 text-rose-500" />,
-      });
-    } catch (error) {
-      console.log("AAAAAAAAAAAAG");
-      console.log(error);
-      toast.error("Error al eliminar la mascota", {
-        description: "No se pudo eliminar la mascota",
-        icon: <PawPrintIcon className="h-5 w-5 text-rose-500" />,
-      });
-    }
+    deletePetMutation.mutate(petId!);
+    navigate("/dashboard/");
+    toast.success("Mascota eliminada correctamente", {
+      icon: <PawPrintIcon className="h-5 w-5 text-rose-500" />,
+    });
   }
 
   if (petQuery.isFetching) return <Loading />;
-  console.log(pet);
-  console.log(petQuery.isError);
   if (petQuery.isError || pet == undefined) {
-    console.log({ pet });
-    console.log(pet == undefined);
-    console.log(petQuery.isError, "petQuery.isError");
-
     return (
       <>
         <div className="flex flex-col mx-auto w-2/3 px-4 py-8 text-center gap-4 items-center">
