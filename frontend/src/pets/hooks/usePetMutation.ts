@@ -72,7 +72,6 @@ export const usePetMutation = () => {
     onMutate: async (data) => {
       const optimisticPet = {
         ...data,
-        id: Date.now(),
       };
 
       queryClient.setQueryData(["pets", {}], (oldData: any) => {
@@ -81,8 +80,10 @@ export const usePetMutation = () => {
         }
         return [optimisticPet];
       });
-  queryClient.setQueryData(["pet", { petId: optimisticPet.id }], () => {
-        return optimisticPet;
+      queryClient.setQueryData(["pet", { petId: optimisticPet.id }], (oldData) => {
+        if (oldData) {
+          return { ...oldData, ...optimisticPet };
+        }
       });
       return { optimisticPet };
     },
