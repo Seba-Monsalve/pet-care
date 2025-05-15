@@ -12,7 +12,7 @@
     "dev:db": "npx prisma migrate deploy && npx prisma generate ",
     "db:deploy": "npx prisma migrate deploy && npx prisma generate",
     "dev": "npx prisma migrate deploy && npx prisma generate && npx tsx watch /backend/index.ts",
-    "build": "npm install && npm install --prefix frontend && npm run build --prefix frontend"
+    "build": "npm install && npm install --prefix ./frontend && npm run build --prefix ./frontend"
   },
   "dependencies": {
     "@prisma/client": "^6.6.0",
