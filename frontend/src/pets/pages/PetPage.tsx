@@ -97,7 +97,7 @@ export const PetPage = () => {
                 alt={pet.name}
                 className="object-cover"
               />
-              <AvatarFallback>{}</AvatarFallback>
+              <AvatarFallback>{ }</AvatarFallback>
             </Avatar>
             <h2 className="text-2xl font-bold">{pet.name}</h2>
             <p className="text-sm text-muted-foreground">
@@ -113,14 +113,13 @@ export const PetPage = () => {
                 {differenceInYears(new Date(), new Date(pet.dob)) > 0 &&
                   `
                             ${differenceInYears(
-                              new Date(),
-                              new Date(pet.dob)
-                            )} años
+                    new Date(),
+                    new Date(pet.dob)
+                  )} años
                             `}
                 {` 
-                        ${
-                          differenceInMonths(new Date(), new Date(pet.dob)) % 12
-                        } meses
+                        ${differenceInMonths(new Date(), new Date(pet.dob)) % 12
+                  } meses
                         `}
               </div>
               <div className="flex items-center justify-between border-b pb-2">
@@ -162,12 +161,12 @@ export const PetPage = () => {
                   ).toLocaleDateString() === "Invalid Date"
                     ? "Ninguna"
                     : new Date(
-                        pet.medicalRecord.sort(
-                          (a, b) =>
-                            new Date(b.date).getTime() -
-                            new Date(a.date).getTime()
-                        )[0]?.date
-                      ).toLocaleDateString()}
+                      pet.medicalRecord.sort(
+                        (a, b) =>
+                          new Date(b.date).getTime() -
+                          new Date(a.date).getTime()
+                      )[0]?.date
+                    ).toLocaleDateString()}
                 </span>
               </div>
             </div>
@@ -222,15 +221,14 @@ export const PetPage = () => {
                         </div>
                         <div className="flex items-center justify-between border-b pb-2">
                           <span className="text-sm font-medium">Color</span>
-                          <span className="text-sm">{}</span>
+                          <span className="text-sm">{ }</span>
                         </div>
                         <div className="flex items-center justify-between border-b pb-2">
                           <span className="text-sm font-medium">Estado</span>
                           <Badge
                             variant={pet.isActive ? "default" : "secondary"}
-                            className={`${
-                              pet.isActive ? "bg-green-600" : "bg-red-600"
-                            }`}
+                            className={`${pet.isActive ? "bg-green-600" : "bg-red-600"
+                              }`}
                           >
                             {pet.isActive ? "Activo" : "Inactivo"}
                           </Badge>
@@ -270,7 +268,8 @@ export const PetPage = () => {
                     <Card className="p-2">
                       <CardContent className="">
                         <div className="flex items-center gap-4">
-                          <Avatar className="h-15 w-15">
+                          <Avatar className="h-15 w-15" >
+                            <AvatarImage src={pet.owner.urlImage} className="object-cover" />
                             <AvatarFallback>
                               {pet.owner.username?.charAt(0)}
                             </AvatarFallback>

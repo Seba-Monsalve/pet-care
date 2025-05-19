@@ -28,6 +28,7 @@ import { usePetMutation } from "../hooks/usePetMutation";
 import axios from "axios";
 import { toast } from "sonner";
 import { PawPrintIcon } from "lucide-react";
+import { uploadFile } from "@/lib/uploadFile";
 
 export function AddPetForm() {
   const form = useForm<z.infer<typeof addPetValidation>>({
@@ -54,20 +55,8 @@ export function AddPetForm() {
     const dob = new Date(+dob_year, +dob_month);
 
     let res;
-    const data = new FormData();
     if (urlImage && urlImage.length > 0) {
-      data.append("file", urlImage[0]);
-      data.append(
-        "upload_preset",
-        import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
-      );
-      data.append("cloud_name", import.meta.env.VITE_CLOUDINARY_CLOUD_NAME);
-      res = await axios.post(
-        `https://api.cloudinary.com/v1_1/${
-          import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
-        }/image/upload`,
-        data
-      );
+      res = await uploadFile(urlImage);
     }
 
     createPetMutation.mutate({
@@ -101,8 +90,8 @@ export function AddPetForm() {
                 urlImage && urlImage.length > 0
                   ? URL.createObjectURL(urlImage[0])
                   : species
-                  ? `/assets/images/${species.toLowerCase()}.jpg`
-                  : `/assets/images/none.jpg`
+                    ? `/assets/images/${species.toLowerCase()}.jpg`
+                    : `/assets/images/none.jpg`
               }
               alt="Imagen de la mascota"
               className="h-50 w-50 rounded-lg object-cover "
@@ -359,7 +348,7 @@ export function AddPetForm() {
               <FormField
                 control={form.control}
                 name="sterilized"
-                render={({}) => (
+                render={({ }) => (
                   <FormItem>
                     <FormLabel>Esterilizado</FormLabel>
                     <FormControl>

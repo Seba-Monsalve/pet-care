@@ -5,4 +5,6 @@ export interface User {
   password: string;
   phone: string;
   address: string;
+  urlImage: string;
+  isVet: boolean;
 }

@@ -14,6 +14,7 @@ export interface Pet {
     email: string;
     phone: string;
     address: string;
+    urlImage: string;
   };
   vaccinationHistory: VaccinationRecord[];
   medicalRecord: MedicalRecord[];

@@ -9,10 +9,12 @@ interface StoreState {
   error: null | string;
   message: null | string;
   isFetchingUser: boolean;
-  signUp: ({username,email,password}:{ username: string; email: string; password: string }) => void;
-  login: ({email,password}: { email: string; password: string }) => Promise<any>;
+  signUp: ({ username, email, password }: { username: string; email: string; password: string }) => void;
+  login: ({ email, password }: { email: string; password: string }) => Promise<any>;
   fetchUser: () => void;
-  logout: () => void;}
+  logout: () => void;
+  updateUser: ({ username, password, address, isVet, phone, urlImage }: { username?: string; password?: string, address?: string, isVet: boolean, phone?: string, urlImage?: string }) => void;
+}
 
 export const useAuthStore = create<StoreState>()(
   persist(
@@ -142,6 +144,25 @@ export const useAuthStore = create<StoreState>()(
           //console.log((error as any).response.data.message);
           return {
             error: "Error logging out",
+          };
+        }
+      },
+
+      updateUser: async ({ username, password, phone, address, isVet, urlImage }) => {
+        set({ error: null, message: null, isLoading: true });
+        console.log("updateUser", username, password, phone, address, isVet, urlImage);
+        try {
+          const id = useAuthStore.getState().user?.id as string;
+          console.log({ id });
+          const res = await userApi.post(`auth/update-user`, { id, username, password, phone, address, isVet, urlImage },);
+          console.log({ res });
+          const user = res.data;
+          set({ user, isLoading: false });
+          return { user };
+        } catch (error) {
+
+          return {
+            error: "Error updating user",
           };
         }
       },

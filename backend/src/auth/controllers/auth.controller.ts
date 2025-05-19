@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import prisma from "../../../prisma-client";
 import { hashPassword, verifyPassword } from "../../utils/bcrypt.util";
-import { ERROR_MESSAGES, generateToken, verifyToken } from "../../utils";
+import { ERROR_MESSAGES, generateToken, verifyToken } from "../../utils/index";
 
 export class AuthController {
   static SignUp = async (
@@ -170,5 +170,42 @@ export class AuthController {
     console.log("LogOut");
     res.clearCookie("access_token");
     res.status(200).json({ message: "Logged out successfully", ok: true });
+  };
+
+  static UpdateUser = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    const id = (req as any).decodedToken.payload;
+    // const { titulo, descripcion, estado } = req.body;
+
+
+    try {
+      const user = await prisma.user.findUnique({
+        where: { id },
+      });
+      if (!user) {
+        const error = new Error(ERROR_MESSAGES.USER_NOT_FOUND.message);
+        (error as any).status = ERROR_MESSAGES.USER_NOT_FOUND.code;
+        throw error;
+      }
+
+      if (req.body.password) {
+        const hashedPassword = await hashPassword(req.body.password);
+        req.body.password = hashedPassword;
+      }
+
+      const updateUser = await prisma.user.update({
+        where: { id },
+        data: {
+          ...req.body,
+        }
+      });
+
+      res.status(200).json(updateUser);
+    } catch (error) {
+      next(error);
+    }
   };
 }

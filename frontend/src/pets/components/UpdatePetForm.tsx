@@ -26,9 +26,9 @@ import { Label } from "@/components/ui";
 import { Pet } from "../interface/pet.interface";
 import { useNavigate } from "react-router";
 import { usePetMutation } from "../hooks/usePetMutation";
-import axios from "axios";
 import { toast } from "sonner";
 import { PawPrintIcon } from "lucide-react";
+import { uploadFile } from "@/lib/uploadFile";
 
 export function UpdatePetForm({ pet }: { pet: Pet }) {
   const form = useForm<z.infer<typeof addPetValidation>>({
@@ -54,19 +54,8 @@ export function UpdatePetForm({ pet }: { pet: Pet }) {
     const { weight, dob_month, dob_year, urlImage, ...rest } = values;
     const dob = new Date(+dob_year, +dob_month);
     let res;
-    const data = new FormData();
     if (urlImage && urlImage.length > 0) {
-      data.append("file", urlImage[0]);
-      data.append(
-        "upload_preset",
-        import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
-      );
-      data.append("cloud_name", import.meta.env.VITE_CLOUDINARY_CLOUD_NAME);
-      res = await axios.post(
-        `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
-        }/image/upload`,
-        data
-      );
+      res = await uploadFile(urlImage);
     }
     updatePetMutation.mutate({
       pet: {
@@ -101,10 +90,10 @@ export function UpdatePetForm({ pet }: { pet: Pet }) {
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className=" flex  flex-col  gap-10 items-start justify-between   "
-      >
+
+      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col justify-center items-center gap-5 w-fit">
+        <h1 className="text-3xl font-semibold mb-2">Actualizar mascota</h1>
+
         <div className="flex flex-row gap-5 justify-center text-center items-center ">
           {/* imagen */}
           <div className="flex h-ful flex-col gap-2  text-center items-center ">

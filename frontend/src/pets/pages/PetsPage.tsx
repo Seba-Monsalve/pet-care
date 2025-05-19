@@ -38,7 +38,7 @@ export default function PetsPage() {
 
   return (
     <div className="flex flex-col gap-6 py-2">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between px-5">
         <h1 className="text-3xl font-bold tracking-tight">Mascotas</h1>
         <Link to="/dashboard/pets/new">
           <Button variant={"default"}>
@@ -164,16 +164,15 @@ export default function PetsPage() {
                               0 &&
                               `
                             ${differenceInYears(
-                              new Date(),
-                              new Date(pet.dob)
-                            )} años
+                                new Date(),
+                                new Date(pet.dob)
+                              )} años
                             `}
                           </span>
                           <span>
                             {` 
-                        ${
-                          differenceInMonths(new Date(), new Date(pet.dob)) % 12
-                        } meses
+                        ${differenceInMonths(new Date(), new Date(pet.dob)) % 12
+                              } meses
                         `}
                           </span>
                         </TableCell>

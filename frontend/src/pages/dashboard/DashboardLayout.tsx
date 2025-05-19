@@ -86,11 +86,12 @@ export default function DashboardLayout() {
               Adopta!
             </Button>
             {/* config */}
-
-            <Button disabled variant="ghost" className="w-full justify-start">
-              <Settings className="mr-2 h-5 w-5" />
-              Configuración
-            </Button>
+            <Link to={"/dashboard/profile"}>
+              <Button variant="ghost" className="w-full justify-start">
+                <Settings className="mr-2 h-5 w-5" />
+                Configuración
+              </Button>
+            </Link>
           </div>
         </aside>
         <main className="flex-1 ">

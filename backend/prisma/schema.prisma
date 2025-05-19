@@ -18,6 +18,8 @@ model User {
   isActive  Boolean  @default(true)
   phone     String?
   address   String?
+  urlImage  String?
+  isVet     Boolean? @default(false)
   Pet       Pet[]
 }
 

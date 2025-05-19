@@ -10,6 +10,7 @@ import PetsPage from "./pets/pages/PetsPage";
 import { AddPetPage, PetPage } from "./pets/pages";
 import { UpdatePetPage } from "./pets/pages/UpdatePetPage";
 import { VetPage } from "./vets/pages/VetPages";
+import { UpdateProfilePage } from "./auth/pages";
 
 function AppRouter() {
   const { user } = useAuthStore();
@@ -34,6 +35,7 @@ function AppRouter() {
             path="/dashboard/pets/update/:petId"
             element={<UpdatePetPage />}
           />
+          <Route path="/dashboard/profiles/update/" element={<UpdateProfilePage />} />
           <Route path="/dashboard/vets" element={<VetPage />} />
         </Route>
         <Route path="/pitbull" element={<Unauthorized />} />

@@ -134,6 +134,8 @@ export class PetController {
               email: true,
               phone: true,
               address: true,
+              isVet: true,
+              urlImage: true,
             },
           },
           vaccinationHistory: {
