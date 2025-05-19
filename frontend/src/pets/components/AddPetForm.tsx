@@ -25,7 +25,6 @@ import { useNavigate } from "react-router";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui";
 import { usePetMutation } from "../hooks/usePetMutation";
-import axios from "axios";
 import { toast } from "sonner";
 import { PawPrintIcon } from "lucide-react";
 import { uploadFile } from "@/lib/uploadFile";

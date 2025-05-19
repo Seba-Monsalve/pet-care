@@ -15,13 +15,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Plus, ListCollapse } from "lucide-react";
+import { Plus, ListCollapse, } from "lucide-react";
 import { Link, useNavigate } from "react-router";
 import { differenceInMonths, differenceInYears } from "date-fns";
 import { usePets } from "../hooks/";
 import { Loading } from "@/common/components/Loading";
 import { Pet } from "../interface/pet.interface";
 import { usePrefetchPet } from "../hooks/usePrefetchPet";
+import { Badge } from "@/components/ui";
 
 export default function PetsPage() {
   const { petsQuery } = usePets();
@@ -118,6 +119,7 @@ export default function PetsPage() {
                     <TableHead>Raza</TableHead>
                     <TableHead>Edad</TableHead>
                     <TableHead>Propietario</TableHead>
+                    <TableHead>Estado</TableHead>
                     <TableHead>Última Revisión</TableHead>
                     <TableHead className="text-center">Acciones</TableHead>
                   </TableRow>
@@ -194,6 +196,21 @@ export default function PetsPage() {
                           {pet.owner?.username}
                         </TableCell>
                         <TableCell className="text-center">
+                          {pet.isLost ? (
+                            <Badge className="bg-red-500 text-white">
+                              <span className="text-white">Perdido</span>
+                            </Badge>
+                          ) :
+                            (
+                              <Badge className="bg-green-500 text-white">
+                                <span className="text-white">En casa</span>
+                              </Badge>
+                            )
+                          }
+                        </TableCell>
+                        {/*!! TODO  arreglar la fecha */}
+                        <TableCell className="text-center">
+                          {/* TODO */}
                           {new Date().toLocaleDateString()}
                         </TableCell>
                         <TableCell className="text-center">

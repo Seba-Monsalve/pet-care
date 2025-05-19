@@ -11,12 +11,15 @@
   },
   "dependencies": {
     "@prisma/client": "^6.6.0",
+    "add": "^2.0.6",
     "bcryptjs": "^3.0.2",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^5.1.0",
-    "jsonwebtoken": "^9.0.2"
+    "jsonwebtoken": "^9.0.2",
+    "shadcn": "^2.5.0",
+    "sidebar": "^1.0.2"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.8",

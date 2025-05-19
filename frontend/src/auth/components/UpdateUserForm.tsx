@@ -14,7 +14,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { updateUserForm } from "@/auth/validation/";
 import { useAuthStore } from "@/store/auth.store";
-import { useNavigate } from "react-router";
 import { toast } from "sonner";
 import { PawPrintIcon } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
@@ -24,7 +23,6 @@ import { Label } from "@/components/ui";
 export function UpdateUserForm() {
 
   const user = useAuthStore((state) => state.user);
-  const navigate = useNavigate();
   const { updateUser, error } = useAuthStore();
 
 
@@ -240,7 +238,6 @@ export function UpdateUserForm() {
 
         <Button type="button" className="flex flex-row w-fit " onClick={
           (e) => {
-            console.log('asdqqwe');
             e.preventDefault();
             form.handleSubmit(onSubmit)();
           }

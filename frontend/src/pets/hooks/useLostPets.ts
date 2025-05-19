@@ -1,18 +1,18 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { getPets } from "../actions/pets/get-pets.action";
+import { getLostPets } from "../actions";
 
-export const usePets = () => {
+export const useLostPets = () => {
   const [page, setpage] = useState(1);
 
-  const petsQuery = useQuery({
-    queryKey: ["pets", {}],
-    queryFn: () => getPets(),
+  const petsLostQuery = useQuery({
+    queryKey: ["lost-pets", {}],
+    queryFn: () => getLostPets(),
     staleTime: 1000 * 60,
   });
 
   const nextPage = () => {
-    if (!petsQuery.data || petsQuery.data.length === 0) return;
+    if (!petsLostQuery.data || petsLostQuery.data.length === 0) return;
     setpage((prev) => prev + 1);
   };
 
@@ -21,7 +21,7 @@ export const usePets = () => {
   };
 
   return {
-    petsQuery,
+    petsLostQuery,
     nextPage,
     previousPage,
     page,

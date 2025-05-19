@@ -23,6 +23,7 @@ export class PetController {
               address: true,
             },
           },
+
         },
         orderBy: { createdAt: "desc" },
       });
@@ -155,8 +156,14 @@ export class PetController {
               description: true,
             },
           },
-        },
-      });
+          lostPetHistory: {
+            select: {
+              id: true,
+              status: true,
+            }
+          }
+        }
+      })
 
       if (!pet) {
         const error = new Error(ERROR_MESSAGES.PET_NOT_FOUND.message);

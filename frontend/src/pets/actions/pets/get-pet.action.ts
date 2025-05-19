@@ -1,5 +1,5 @@
 import { petApi } from "@/api/pet.api";
-import { Pet } from "../interface/pet.interface";
+import { Pet } from "../../interface/pet.interface";
 
 export const getPet = async (petId: string): Promise<Pet | null> => {
   try {

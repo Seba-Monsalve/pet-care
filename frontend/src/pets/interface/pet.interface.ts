@@ -20,6 +20,8 @@ export interface Pet {
   medicalRecord: MedicalRecord[];
   notes: string[];
   microchip: string | null;
+  isLost: boolean;
+  lostPetHistory: LostPetHistory[];
 }
 
 interface VaccinationRecord {
@@ -28,6 +30,15 @@ interface VaccinationRecord {
   date: Date;
   nextDate: Date;
   status: boolean;
+}
+
+export interface LostPetHistory {
+  id: string;
+  foundAt: null;
+  description: string;
+  status: string;
+  location: string;
+  lastSeen: Date;
 }
 
 interface MedicalRecord {

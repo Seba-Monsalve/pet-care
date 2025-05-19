@@ -1,5 +1,8 @@
+import { url } from "inspector";
+import { LostStatus } from "../../generated/prisma";
 import prisma from "../../prisma-client";
 import { hashPassword } from "../utils";
+import { lostPetHistoryData } from "./data/lost-history.data";
 import { medicalRecords } from "./data/medical-records.data";
 import { pets } from "./data/pet.data";
 import { users } from "./data/user.data";
@@ -28,13 +31,16 @@ export class SeedController {
 
     const dbUsers = await prisma.user.findMany();
 
-    let petPromises = pets.map((element) =>
-      prisma.pet.create({
+    let petPromises = pets.map(async (element) => {
+      const res = await fetch('https://dog.ceo/api/breeds/image/random')
+      return prisma.pet.create({
         data: {
           ownerId: dbUsers[Math.floor(Math.random() * users.length)].id,
+          urlImage: await res.json().then((res) => res.message),
           ...element,
         },
       })
+    }
     );
     await Promise.all(petPromises);
 
@@ -62,6 +68,30 @@ export class SeedController {
       });
     });
     await Promise.all(medicalRecordsPromises);
+
+    let lostHistoryPromises = lostPetHistoryData.map(async (lostRecord, i) => {
+
+      const pet = dbPets[i].id
+
+      await prisma.pet.update({
+        data: { isLost: lostRecord.status == 'Perdido' }, where: { id: pet }
+      })
+
+      return prisma.lostPetHistory.create({
+        data: {
+          // petId: dbPets[Math.floor(Math.random() * dbPets.length)].id,
+          // ...lostrecord
+          petId: dbPets[i].id,
+          lastSeen: lostRecord.lastSeen,
+          location: lostRecord.location,
+          description: lostRecord.description,
+          reward: lostRecord.reward,
+          status: LostStatus[lostRecord.status],
+          foundAt: lostRecord.foundAt,
+        },
+      });
+    });
+    await Promise.all(lostHistoryPromises);
 
     res.status(200).json({ ...process.env, message: "Seeding completed" });
   };

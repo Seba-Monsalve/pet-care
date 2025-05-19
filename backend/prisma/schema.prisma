@@ -42,6 +42,26 @@ model Pet {
   microchip          String?
   medicalRecord      MedicalRecord[]
   vaccinationHistory VaccinationHistory[]
+  isLost             Boolean              @default(false)
+  lostPetHistory     LostPetHistory[]
+}
+
+model LostPetHistory {
+  id          String     @id @default(uuid())
+  createdAt   DateTime   @default(now()) @db.Timestamp(6)
+  petId       String
+  pet         Pet        @relation(fields: [petId], references: [id], onDelete: Cascade)
+  lastSeen    DateTime   @db.Timestamp(6)
+  location    String
+  description String
+  reward      Int?
+  status      LostStatus
+  foundAt     DateTime?  @db.Timestamp(6)
+}
+
+enum LostStatus {
+  Perdido
+  Encontrado
 }
 
 enum Sex {

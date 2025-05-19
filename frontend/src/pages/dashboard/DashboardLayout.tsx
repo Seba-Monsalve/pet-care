@@ -5,8 +5,8 @@ import {
   Users,
   Settings,
   LogOut,
-  Search,
   HousePlus,
+  TriangleAlertIcon,
 } from "lucide-react";
 import { useAuthStore } from "@/store/auth.store";
 import { toast } from "sonner";
@@ -76,8 +76,8 @@ export default function DashboardLayout() {
               </Button>
             </div>
             {/* search */}
-            <Button disabled variant="ghost" className="w-full justify-start">
-              <Search className="mr-2 h-5 w-5" />
+            <Button variant="ghost" className="w-full justify-start" onClick={() => navigate("/dashboard/lost-pets")}>
+              <TriangleAlertIcon className="mr-2 h-5 w-5" />
               Mascotas Perdidas
             </Button>
             {/* adopcion */}

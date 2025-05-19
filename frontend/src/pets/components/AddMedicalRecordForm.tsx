@@ -40,7 +40,7 @@ export const AddMedicalRecordForm = ({ pet }: { pet: any }) => {
     const medicalRecord = [
       ...pet.medicalRecord,
       {
-        id: undefined,
+        id: new Date().getTime(),
         date: new Date(+values.year, +values.month),
         createdAt: undefined,
         ...values,
@@ -175,11 +175,10 @@ export const AddMedicalRecordForm = ({ pet }: { pet: any }) => {
         <PopoverClose
           disabled={!form.formState.isValid}
           type="submit"
-          className={`cursor-pointer  ${
-            !form.formState.isValid
-              ? "bg-gray-300 text-gray-500"
-              : "bg-rose-500 text-white hover:bg-rose-600"
-          }  rounded-md px-4 py-2 text-sm font-medium  
+          className={`cursor-pointer  ${!form.formState.isValid
+            ? "bg-gray-300 text-gray-500"
+            : "bg-rose-500 text-white hover:bg-rose-600"
+            }  rounded-md px-4 py-2 text-sm font-medium  
           }`}
         >
           Ingresar

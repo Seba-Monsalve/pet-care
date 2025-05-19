@@ -7,6 +7,7 @@ import { seedRoutes } from "./src/seed/seed.route";
 import cors from "cors";
 import { authenticateToken } from "./src/utils";
 import path from "path";
+import { lostPetRouter } from "./src/pets/routes/lost-pets.routes";
 
 dotenv.config();
 
@@ -29,6 +30,7 @@ const __dirname = path.resolve();
 
 app.use("/api/auth", authRoutes);
 app.use("/api/pets", authenticateToken, petRoutes);
+app.use("/api/lost-pets", authenticateToken, lostPetRouter);
 app.use("/api/seed", authenticateToken, seedRoutes);
 
 app.use(express.static(path.join(__dirname, "../frontend/dist")));
@@ -48,6 +50,4 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
 
 app.listen(PORT, async () => {
   console.log(`Running on port ${PORT} `);
-  console.log(path.join(__dirname, "../frontend/dist/index.html"));
-  console.log(path.join(__dirname, "../frontend/dist"));
 });

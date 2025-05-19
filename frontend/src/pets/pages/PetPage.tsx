@@ -13,6 +13,8 @@ import {
   MapPin,
   Plus,
   PawPrintIcon,
+  TriangleAlert,
+  Home,
 } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router";
 import { differenceInMonths, differenceInYears } from "date-fns";
@@ -88,21 +90,28 @@ export const PetPage = () => {
             </Badge>
           </CardHeader> */}
           <CardContent className="flex flex-col items-center text-center">
-            <Avatar className="h-24 w-24 mb-4">
-              <AvatarImage
-                src={
-                  pet.urlImage ||
-                  `/assets/images/${pet.species.toLowerCase()}.jpg`
-                }
-                alt={pet.name}
-                className="object-cover"
-              />
-              <AvatarFallback>{ }</AvatarFallback>
-            </Avatar>
-            <h2 className="text-2xl font-bold">{pet.name}</h2>
-            <p className="text-sm text-muted-foreground">
-              {pet.species} - {pet.breed}
-            </p>
+            <div className="flex flex-row items-center gap-5 justify-between">
+
+              <div className="flex flex-col items-center">
+                <div className="relative h-32 w-48 mb-4 flex items-center justify-center">
+                  <img
+                    src={
+                      pet.urlImage ||
+                      `/assets/images/${pet.species.toLowerCase()}.jpg`
+                    }
+                    alt={pet.name}
+                    className="absolute inset-0 h-full w-full object-cover rounded-lg opacity-80"
+                  />
+                </div>
+
+                <h2 className="text-2xl font-bold">{pet.name}</h2>
+                <p className="text-sm text-muted-foreground">
+                  {pet.species} - {pet.breed}
+                </p>
+              </div>
+
+
+            </div>
 
             <div className="mt-6 w-full space-y-4">
               <div className="flex items-center justify-between border-b pb-2">
@@ -171,25 +180,14 @@ export const PetPage = () => {
               </div>
             </div>
           </CardContent>
-          <CardFooter className="flex justify-between">
+          <CardFooter className="flex flex-col  items-center justify-around gap-4">
             <Link to={`/dashboard/pets/update/${pet.id}`}>
               <Button variant="outline" className="flex items-center gap-1">
                 <Pencil className="h-4 w-4" />
                 Editar
               </Button>
             </Link>
-            <Button
-              variant="destructive"
-              className="flex items-center gap-1"
-              onClick={() => {
-                if (confirm) onDelete();
-                setconfirm((prev) => !prev);
-              }}
-            >
-              <Trash2 className="h-4 w-4" />
 
-              {!confirm ? "Eliminar" : "Segurito?"}
-            </Button>
           </CardFooter>
         </Card>
 
@@ -226,11 +224,11 @@ export const PetPage = () => {
                         <div className="flex items-center justify-between border-b pb-2">
                           <span className="text-sm font-medium">Estado</span>
                           <Badge
-                            variant={pet.isActive ? "default" : "secondary"}
-                            className={`${pet.isActive ? "bg-green-600" : "bg-red-600"
+                            variant={!pet.isLost ? "default" : "secondary"}
+                            className={`${!pet.isLost ? "bg-green-600 text-white" : "bg-red-600 text-white"
                               }`}
                           >
-                            {pet.isActive ? "Activo" : "Inactivo"}
+                            {!pet.isLost ? "En casa" : "Perdido"}
                           </Badge>
                         </div>
                       </div>
@@ -261,39 +259,92 @@ export const PetPage = () => {
                     </div>
                   </div>
 
-                  <div>
-                    <h3 className="text-lg font-medium mb-2">
-                      Información del Propietario
-                    </h3>
-                    <Card className="p-2">
-                      <CardContent className="">
-                        <div className="flex items-center gap-4">
-                          <Avatar className="h-15 w-15" >
-                            <AvatarImage src={pet.owner.urlImage} className="object-cover" />
-                            <AvatarFallback>
-                              {pet.owner.username?.charAt(0)}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div className="space-y-1">
-                            <h4 className="text-sm font-medium">
-                              {pet.owner.username}
-                            </h4>
-                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                              <Phone className="h-3 w-3 text-rose-500" />
-                              <span>{pet.owner.phone}</span>
-                            </div>
-                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                              <Mail className="h-3 w-3 text-rose-500" />
-                              <span>{pet.owner.email}</span>
-                            </div>
-                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                              <MapPin className="h-3 w-3 text-rose-500" />
-                              <span>{pet.owner.address}</span>
+                  <div className="flex  gap-4">
+
+
+                    <div className="w-2/3">
+                      <h3 className="text-lg font-medium mb-2 w-fit">
+                        Información del Propietario
+                      </h3>
+                      <Card className="p-2">
+                        <CardContent className="">
+                          <div className="flex items-center gap-4">
+                            <Avatar className="h-15 w-15" >
+                              <AvatarImage src={pet.owner.urlImage} className="object-cover" />
+                              <AvatarFallback>
+                                {pet.owner.username?.charAt(0)}
+                              </AvatarFallback>
+                            </Avatar>
+                            <div className="space-y-1">
+                              <h4 className="text-sm font-medium">
+                                {pet.owner.username}
+                              </h4>
+                              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                <Phone className="h-3 w-3 text-rose-500" />
+                                <span>{pet.owner.phone}</span>
+                              </div>
+                              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                <Mail className="h-3 w-3 text-rose-500" />
+                                <span>{pet.owner.email}</span>
+                              </div>
+                              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                <MapPin className="h-3 w-3 text-rose-500" />
+                                <span>{pet.owner.address}</span>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </CardContent>
-                    </Card>
+                        </CardContent>
+                      </Card>
+                    </div>
+                    <div className="w-1/3 flex flex-col gap-2">
+                      <h3 className="text-lg font-medium mb-2 w-fit">
+                        Otras Acciones
+                      </h3>
+                      {
+                        !pet.isLost
+                          ? (
+                            <Button
+                              className="flex items-center gap-1 bg-yellow-500  text-white hover:bg-yellow-100 transition-all duration-200 ease-in-out"
+                              variant={'outline'}
+                              onClick={() => {
+                                console.log('perdido');
+                              }}>
+                              <TriangleAlert className="h-4 w-4" />
+                              <span className="hidden lg:inline">
+                                Reportar Perdido
+                              </span>
+                            </Button>
+                          )
+                          : (
+                            <Button
+                              className="flex items-center gap-1 bg-green-500  text-white hover:bg-green-100 transition-all duration-200 ease-in-out"
+                              variant={'outline'}
+                              onClick={() => {
+                                console.log('encontrado');
+                              }}>
+                              <Home className="h-4 w-4" />
+                              <span className="hidden lg:inline">
+
+                                Reportar Encontrado
+                              </span>
+
+                            </Button>
+                          )
+                      }
+
+                      < Button
+                        variant="destructive"
+                        className="flex items-center gap-1 transition-all duration-200 ease-in-out"
+                        onClick={() => {
+                          if (confirm) onDelete();
+                          setconfirm((prev) => !prev);
+                        }}
+                      >
+                        <Trash2 className="h-4 w-4" />
+
+                        {!confirm ? "Eliminar" : "Segurito?"}
+                      </Button>
+                    </div>
                   </div>
 
                   <div>
@@ -360,6 +411,6 @@ export const PetPage = () => {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </div >
   );
 };

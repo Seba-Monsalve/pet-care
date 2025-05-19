@@ -4,7 +4,6 @@ import axios from "axios";
 
 export const uploadFile = async (urlImage: File[]) => {
 
-    let res;
     const data = new FormData();
     data.append("file", urlImage[0]);
     data.append(
@@ -12,7 +11,7 @@ export const uploadFile = async (urlImage: File[]) => {
         import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
     );
     data.append("cloud_name", import.meta.env.VITE_CLOUDINARY_CLOUD_NAME);
-    return res = await axios.post(
+    return await axios.post(
         `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
         }/image/upload`,
         data
