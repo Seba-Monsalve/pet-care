@@ -2,7 +2,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createLostPetNoticeAction } from "../actions/lost-pets/create-lost-pet-notice.action";
 import { LostPetHistory, Pet, } from "../interface/pet.interface";
 import { foundPetAction } from "../actions/lost-pets/found-pet-action.action";
-import { i } from "node_modules/react-router/dist/development/fog-of-war-D2zsXvum.d.mts";
 
 export const useLostPetNoticeMutation = () => {
   const queryClient = useQueryClient();
@@ -12,6 +11,7 @@ export const useLostPetNoticeMutation = () => {
     onMutate: async (data) => {
 
       const { pet, ...rest } = data
+
       const optimisticLostPet = {
         ...pet,
         lostPetHistory: pet.lostPetHistory.length == 0 ? [{ ...rest, status: "Perdido", }] : [
@@ -31,8 +31,25 @@ export const useLostPetNoticeMutation = () => {
         isLost: true,
       };
 
-      queryClient.setQueryData(["pet", { petId: optimisticLostPet.id }],
-        optimisticLostPet
+      queryClient.setQueryData(["pet", { petId: pet.id }],
+
+        (oldData: any) => {
+          return {
+            ...oldData,
+            isLost: true,
+            lostPetHistory: oldData.lostPetHistory.map((history: LostPetHistory) => {
+              if (history.status == 'Perdido') {
+                return {
+                  id: history.id,
+                  status: "Perdido",
+                  ...rest,
+                }
+              }
+              return history
+            })
+          }
+        }
+
       );
 
       queryClient.setQueryData(["pets", {}], (oldData: any) => {
