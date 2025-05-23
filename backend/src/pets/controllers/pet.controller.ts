@@ -21,6 +21,7 @@ export class PetController {
               email: true,
               phone: true,
               address: true,
+              id: true,
             },
           },
 
@@ -136,6 +137,7 @@ export class PetController {
               phone: true,
               address: true,
               isVet: true,
+              id: true,
               urlImage: true,
             },
           },

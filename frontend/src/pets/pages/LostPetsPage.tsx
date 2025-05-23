@@ -9,6 +9,27 @@ export default function LostPetsPage() {
 
     const { petsLostQuery } = useLostPets()
     const { data: lostPets = [], } = petsLostQuery
+    console.log('page lost pets', lostPets);
+
+    // queryKey: ["lost-pets", {}],
+
+    //     {
+    //     "id": "6b69a23b-766f-414a-8aa7-0ce55962d770",
+    //     "name": "Kiwi",
+    //     "species": "Ave",
+    //     "breed": "Periquito",
+    //     "urlImage": "https://images.dog.ceo/breeds/terrier-welsh/lucy.jpg",
+    //     "isLost": true,
+    //     "lostPetHistory": [
+    //         {
+    //             "location": "66",
+    //             "status": "Perdido",
+    //             "reward": 0,
+    //             "lastSeen": "2025-05-23T14:32:37.549Z"
+    //         }
+    //     ]
+    // }
+    console.log('page lost pets', lostPets);
 
     return (
         <div className="flex flex-col gap-4 p-3">
@@ -69,7 +90,7 @@ export default function LostPetsPage() {
                 <div className="flex items-center justify-between">
                     <TabsList>
                         <TabsTrigger value="grid">Cuadrícula</TabsTrigger>
-                        <TabsTrigger value="map">Mapa</TabsTrigger>
+                        <TabsTrigger disabled value="map">Mapa</TabsTrigger>
                     </TabsList>
                     <div className="text-sm text-muted-foreground">
                         Mostrando <strong>{lostPets.length}</strong> mascotas perdidas

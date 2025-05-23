@@ -15,9 +15,9 @@ import {
   PawPrintIcon,
   TriangleAlert,
   Home,
+  SquareArrowOutUpRight,
 } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router";
-import { differenceInMonths, differenceInYears } from "date-fns";
 import { Avatar, AvatarFallback, AvatarImage, Badge } from "@/components/ui";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { VaccinationHistory } from "../components/VaccinationHistory";
@@ -34,11 +34,17 @@ import { AddVaccinationRecordForm } from "../components/AddVaccinationRecordForm
 import { usePet, usePetMutation } from "../hooks/index.ts";
 import { useState } from "react";
 import { toast } from "sonner";
+import { calculateYear } from "@/lib/calculateYear.ts";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog.tsx";
+import { LostNoticeForm } from "../components/LostNoticeForm.tsx";
 
 export const PetPage = () => {
   const navigate = useNavigate();
   const { petId } = useParams();
   const { petQuery } = usePet(petId || "");
+
+
+  const [isOpen, setisOpen] = useState(false)
   if ((petQuery.isError as any)?.status === 401) {
     toast.error("No tienes permiso para ver esta mascota");
     navigate("/");
@@ -48,6 +54,7 @@ export const PetPage = () => {
 
   const [confirm, setconfirm] = useState(false);
   const pet = petQuery.data;
+
 
   async function onDelete() {
     deletePetMutation.mutate(petId!);
@@ -76,6 +83,8 @@ export const PetPage = () => {
       </>
     );
   }
+  console.log('PETPAGE', { pet });
+
 
   return (
     <div className="flex flex-col gap-6">
@@ -119,17 +128,7 @@ export const PetPage = () => {
                   <Heart className="h-4 w-4 text-rose-500" />
                   <span className="text-sm font-medium">Edad</span>
                 </div>
-                {differenceInYears(new Date(), new Date(pet.dob)) > 0 &&
-                  `
-                            ${differenceInYears(
-                    new Date(),
-                    new Date(pet.dob)
-                  )} años
-                            `}
-                {` 
-                        ${differenceInMonths(new Date(), new Date(pet.dob)) % 12
-                  } meses
-                        `}
+                {calculateYear(pet.dob.toLocaleString())}
               </div>
               <div className="flex items-center justify-between border-b pb-2">
                 <div className="flex items-center gap-2">
@@ -296,39 +295,65 @@ export const PetPage = () => {
                         </CardContent>
                       </Card>
                     </div>
-                    <div className="w-1/3 flex flex-col gap-2">
+                    <div className="w-1/3 flex flex-col gap-2 px-2">
                       <h3 className="text-lg font-medium mb-2 w-fit">
                         Otras Acciones
                       </h3>
                       {
                         !pet.isLost
                           ? (
-                            <Button
-                              className="flex items-center gap-1 bg-yellow-500  text-white hover:bg-yellow-100 transition-all duration-200 ease-in-out"
-                              variant={'outline'}
-                              onClick={() => {
-                                console.log('perdido');
-                              }}>
-                              <TriangleAlert className="h-4 w-4" />
-                              <span className="hidden lg:inline">
-                                Reportar Perdido
-                              </span>
-                            </Button>
+
+                            <Dialog open={isOpen} onOpenChange={setisOpen}>
+
+
+                              <DialogTrigger asChild>
+                                <Button
+                                  className="flex items-center gap-1 bg-yellow-500  text-white hover:bg-yellow-100 transition-all duration-200 ease-in-out"
+                                  variant={'outline'}
+                                  onClick={() => {
+                                  }}>
+                                  <TriangleAlert className="h-4 w-4" />
+                                  <span className="hidden lg:inline">
+                                    Reportar Perdido
+                                  </span>
+                                </Button>
+
+                              </DialogTrigger>
+                              <DialogContent className="text-center">
+                                <DialogHeader className="flex flex-col items-center">
+                                  <PawPrintIcon className="h-8 w-8 text-rose-500" />
+
+                                  <DialogTitle> Aviso de perdida de mascota </DialogTitle>
+                                  <DialogDescription className="text-sm text-muted-foreground text-center">
+                                    Entrega todos los detalles de tu mascota perdida para ayudar a otros a identificarla y contactarte.
+                                  </DialogDescription>
+                                </DialogHeader>
+                                <LostNoticeForm pet={pet} setisOpen={setisOpen} />
+                              </DialogContent>
+                            </Dialog>
+
                           )
                           : (
-                            <Button
-                              className="flex items-center gap-1 bg-green-500  text-white hover:bg-green-100 transition-all duration-200 ease-in-out"
-                              variant={'outline'}
-                              onClick={() => {
-                                console.log('encontrado');
-                              }}>
-                              <Home className="h-4 w-4" />
-                              <span className="hidden lg:inline">
+                            <div className="flex gap-2">
+                              <Button
+                                className=" bg-green-500  text-white hover:bg-green-100 transition-all duration-200 ease-in-out"
+                                onClick={() => {
+                                  console.log('encontrado');
+                                }}>
+                                <Home className="h-4 w-4" />
+                                <span className="hidden lg:inline">
+                                  Encontrado
+                                </span>
+                              </Button>
+                              <Button className="w-fit flex items-center gap-1 bg-yellow-500  text-white hover:bg-green-100 transition-all duration-200 ease-in-out "
+                                onClick={() => {
+                                  navigate(`/dashboard/lost-pets/${pet.id}`);
+                                }}
+                                variant={'outline'}>
+                                <SquareArrowOutUpRight />
+                              </Button>
+                            </div>
 
-                                Reportar Encontrado
-                              </span>
-
-                            </Button>
                           )
                       }
 

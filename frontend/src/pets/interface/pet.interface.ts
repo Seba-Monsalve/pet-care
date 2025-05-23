@@ -9,7 +9,9 @@ export interface Pet {
   urlImage?: string;
   dob: Date;
   isActive: boolean;
+  color: string;
   owner: {
+    id: string
     username: string;
     email: string;
     phone: string;
@@ -39,6 +41,7 @@ export interface LostPetHistory {
   status: string;
   location: string;
   lastSeen: Date;
+  reward: number
 }
 
 interface MedicalRecord {

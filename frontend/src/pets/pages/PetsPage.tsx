@@ -17,12 +17,12 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Plus, ListCollapse, } from "lucide-react";
 import { Link, useNavigate } from "react-router";
-import { differenceInMonths, differenceInYears } from "date-fns";
 import { usePets } from "../hooks/";
 import { Loading } from "@/common/components/Loading";
 import { Pet } from "../interface/pet.interface";
 import { usePrefetchPet } from "../hooks/usePrefetchPet";
 import { Badge } from "@/components/ui";
+import { calculateYear } from "@/lib/calculateYear";
 
 export default function PetsPage() {
   const { petsQuery } = usePets();
@@ -162,21 +162,9 @@ export default function PetsPage() {
                         <TableCell>{pet.breed}</TableCell>
                         <TableCell>
                           <span>
-                            {differenceInYears(new Date(), new Date(pet.dob)) >
-                              0 &&
-                              `
-                            ${differenceInYears(
-                                new Date(),
-                                new Date(pet.dob)
-                              )} años
-                            `}
+                            {calculateYear(pet?.dob.toString())}
                           </span>
-                          <span>
-                            {` 
-                        ${differenceInMonths(new Date(), new Date(pet.dob)) % 12
-                              } meses
-                        `}
-                          </span>
+
                         </TableCell>
 
                         {/* <TableCell>{pet.owner}</TableCell> */}

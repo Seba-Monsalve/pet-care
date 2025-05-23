@@ -37,7 +37,8 @@ function AppRouter() {
             path="/dashboard/pets/update/:petId"
             element={<UpdatePetPage />}
           />
-          <Route path="/dashboard/profiles/update/" element={<UpdateProfilePage />} />
+          <Route path="/dashboard/profile/update/" element={<UpdateProfilePage />} />
+          <Route path="/dashboard/profile" element={<UpdateProfilePage />} />
           <Route path="/dashboard/vets" element={<VetPage />} />
           <Route path="/dashboard/lost-pets" element={<LostPets />} />
           <Route path="/dashboard/lost-pets/:id" element={<LostPetsDetailsPage />} />

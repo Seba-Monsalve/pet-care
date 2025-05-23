@@ -9,7 +9,9 @@ import { useNavigate } from "react-router"
 export function LostPetCard({ pet }: any) {
     const navigate = useNavigate()
 
-    const { reward, location, lastSeen } = pet.lostPetHistory[0]
+
+    const { reward, location, lastSeen } = pet.lostPetHistory.find((history: any) => history.status === "Perdido")
+
     return (
         <Card className="overflow-hidden hover:shadow-md transition-shadow gap-2 py-0 cursor-pointer" onClick={() => {
             navigate(`/dashboard/lost-pets/${pet.id}`)
@@ -26,8 +28,10 @@ export function LostPetCard({ pet }: any) {
                 <div
                     className="absolute inset-0 bg-center bg-cover rounded"
                     style={{
-                        backgroundImage: `url(${pet.urlImage || "/placeholder.svg"})`,
+                        backgroundImage: `url(${pet.urlImage || `/assets/images/${pet.species.toLowerCase()}.jpg`})`,
                     }}
+
+
                 />
             </div>
             <CardContent className="px-4 py-2 flex flex-row items-center justify-between gap-4">
