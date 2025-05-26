@@ -41,7 +41,6 @@ export const LostNoticeForm = ({ pet, setisOpen }: { pet: any, setisOpen: (value
     });
 
     async function onSubmit(values: z.infer<typeof addLostNoticeSchema>) {
-        console.log(values);
         await createLostPetNotice.mutate({
             ...values,
             pet,
@@ -93,7 +92,7 @@ export const LostNoticeForm = ({ pet, setisOpen }: { pet: any, setisOpen: (value
                                             mode="single"
                                             selected={new Date(field.value) || undefined}
                                             onSelect={field.onChange}
-                                            disabled={(date) =>
+                                            disabled={(date: any) =>
                                                 date > new Date() || date < new Date("1900-01-01")
                                             }
                                             initialFocus

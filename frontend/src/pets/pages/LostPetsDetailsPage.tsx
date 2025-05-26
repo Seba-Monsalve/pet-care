@@ -62,12 +62,9 @@ export default function LostPetDetailPage() {
         return <div>Error: ID de mascota no proporcionado.</div>
     }
     const { lostPetQuery } = useLostPet(id)
-    const { data: pet, isLoading, isError } = lostPetQuery
-    console.log({ pet });
+    const { data: pet, isLoading, } = lostPetQuery
 
     const lostPetRecord = pet?.lostPetHistory?.find((record) => record.status === "Perdido")
-
-    console.log({ lostPetRecord });
     const { foundPetNotice } = useLostPetNoticeMutation();
 
     const [isOpen, setisOpen] = useState(false)
@@ -80,12 +77,12 @@ export default function LostPetDetailPage() {
         });
 
         if (!foundPetNotice.isError) {
-            toast.success("Se ha creado la publicación de la mascota perdida");
+            toast.success("Se ha actualizado la publicación de la mascota perdida");
             setisOpen(false)
             navigate(`/dashboard/pets/${id}`)
             return
         }
-        toast.error("Error al crear la publicación de la mascota perdida");
+        toast.error("Error al crear la actualizar de la mascota perdida");
 
     }
 

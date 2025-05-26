@@ -64,7 +64,6 @@ export const useLostPetNoticeMutation = () => {
       });
 
       queryClient.setQueryData(["lost-pets", {}], (oldData: any) => {
-        console.log({ oldData });
         if (oldData) {
           return [
             ...oldData.filter((insertedPet: Pet) => {
@@ -98,14 +97,14 @@ export const useLostPetNoticeMutation = () => {
       });
     },
 
-    onSuccess: (updatedPet, _, context) => {
+    onSuccess: (updatedPet, _, ___) => {
 
       queryClient.setQueryData(["pet", { petId: updatedPet.id }], () => {
         return { ...updatedPet };
       });
     },
 
-    onError: (_, __, context) => {
+    onError: (_, __, ___) => {
       //Invalidate and refetch
       // queryClient.invalidateQueries({
       //   queryKey: ["Pets", { filterKey: data.category }],
@@ -120,21 +119,15 @@ export const useLostPetNoticeMutation = () => {
     onMutate: async (data) => {
 
       const { pet, ...rest } = data
-      const optimisticLostPet = {
-        ...pet,
-        isLost: false,
-      };
-      console.log({ rest });
 
 
-      queryClient.setQueryData(["pet", { petId: optimisticLostPet.id }], (oldData: any) => {
+      queryClient.setQueryData(["pet", { petId: pet.id }], (oldData: any) => {
         return {
           ...oldData,
           isLost: false,
           lostPetHistory: oldData.lostPetHistory.map((history: LostPetHistory) => {
             if (history.status == 'Perdido') {
               return {
-                id: history.id,
                 status: "Encontrado",
                 ...rest,
               }
@@ -143,27 +136,56 @@ export const useLostPetNoticeMutation = () => {
           })
         }
       }
-      );
+      )
+      queryClient.setQueryData(["pets", {}], (oldData: any) => {
+
+        if (oldData) {
+          return oldData.map((insertedPet: Pet) => {
+            return insertedPet.id === pet.id
+              ? { ...insertedPet, isLost: false }
+              : insertedPet;
+          });
+        }
+        return [pet];
+      }
+      )
 
       queryClient.setQueryData(["lost-pets", {}], (oldData: any) => {
         if (oldData) {
-          return oldData.filter((insertedPet: Pet) => {
-            return insertedPet.id !== optimisticLostPet.id
-          })
+          return [
+            ...oldData.filter((insertedPet: Pet) => {
+              return insertedPet.id !== pet.id
+            })
+          ]
         }
         return [];
       });
-      queryClient.invalidateQueries({ queryKey: ["lost-pets", { petId: optimisticLostPet.id }] })
-    },
 
-    onSuccess: (updatedPet, _, context) => {
+
+      queryClient.setQueryData(["lost-pets", { petId: pet.id }], () => {
+        return {
+          ...pet,
+          isLost: false,
+          lostPetHistory: pet.lostPetHistory.map((history: LostPetHistory) => {
+            if (history.status == 'Perdido') {
+              return {
+                status: "Encontrado",
+                ...rest,
+              }
+            }
+            return history
+          })
+        }
+      });
+    }
+    , onSuccess: (updatedPet, _, ___) => {
 
       queryClient.setQueryData(["pet", { petId: updatedPet.id }], () => {
         return { ...updatedPet };
       });
     },
 
-    onError: (_, __, context) => {
+    onError: (_, __, ___) => {
       //Invalidate and refetch
       // queryClient.invalidateQueries({
       //   queryKey: ["Pets", { filterKey: data.category }],

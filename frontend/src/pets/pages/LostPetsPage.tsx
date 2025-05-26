@@ -9,7 +9,7 @@ export default function LostPetsPage() {
 
     const { petsLostQuery } = useLostPets()
     const { data: lostPets = [], } = petsLostQuery
-    console.log('page lost pets', lostPets);
+
 
     // queryKey: ["lost-pets", {}],
 
@@ -29,7 +29,7 @@ export default function LostPetsPage() {
     //         }
     //     ]
     // }
-    console.log('page lost pets', lostPets);
+
 
     return (
         <div className="flex flex-col gap-4 p-3">

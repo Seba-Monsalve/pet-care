@@ -150,12 +150,9 @@ export const useAuthStore = create<StoreState>()(
 
       updateUser: async ({ username, password, phone, address, isVet, urlImage }) => {
         set({ error: null, message: null, isLoading: true });
-        console.log("updateUser", username, password, phone, address, isVet, urlImage);
         try {
           const id = useAuthStore.getState().user?.id as string;
-          console.log({ id });
           const res = await userApi.post(`auth/update-user`, { id, username, password, phone, address, isVet, urlImage },);
-          console.log({ res });
           const user = res.data;
           set({ user, isLoading: false });
           return { user };

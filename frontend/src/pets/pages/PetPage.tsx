@@ -37,6 +37,7 @@ import { toast } from "sonner";
 import { calculateYear } from "@/lib/calculateYear.ts";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog.tsx";
 import { LostNoticeForm } from "../components/LostNoticeForm.tsx";
+import { useLostPetNoticeMutation } from "../hooks/useLostPetNoticeMutation.ts";
 
 export const PetPage = () => {
   const navigate = useNavigate();
@@ -83,8 +84,24 @@ export const PetPage = () => {
       </>
     );
   }
-  console.log('PETPAGE', { pet });
+  const { foundPetNotice } = useLostPetNoticeMutation();
 
+
+
+  async function onFoundIt() {
+
+    await foundPetNotice.mutate({
+      pet
+    });
+
+    if (!foundPetNotice.isError) {
+      toast.success("Se ha actualizado la publicación de la mascota perdida");
+      setisOpen(false)
+      navigate(`/dashboard/pets/${petId}`)
+      return
+    }
+    toast.error("Error al crear la actualizar de la mascota perdida");
+  }
 
   return (
     <div className="flex flex-col gap-6">
@@ -338,7 +355,7 @@ export const PetPage = () => {
                               <Button
                                 className=" bg-green-500  text-white hover:bg-green-100 transition-all duration-200 ease-in-out"
                                 onClick={() => {
-                                  console.log('encontrado');
+                                  onFoundIt()
                                 }}>
                                 <Home className="h-4 w-4" />
                                 <span className="hidden lg:inline">
