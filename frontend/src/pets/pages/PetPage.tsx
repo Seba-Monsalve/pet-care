@@ -35,7 +35,14 @@ import { usePet, usePetMutation } from "../hooks/index.ts";
 import { useState } from "react";
 import { toast } from "sonner";
 import { calculateYear } from "@/lib/calculateYear.ts";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog.tsx";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog.tsx";
 import { LostNoticeForm } from "../components/LostNoticeForm.tsx";
 import { useLostPetNoticeMutation } from "../hooks/useLostPetNoticeMutation.ts";
 
@@ -44,8 +51,7 @@ export const PetPage = () => {
   const { petId } = useParams();
   const { petQuery } = usePet(petId || "");
 
-
-  const [isOpen, setisOpen] = useState(false)
+  const [isOpen, setisOpen] = useState(false);
   if ((petQuery.isError as any)?.status === 401) {
     toast.error("No tienes permiso para ver esta mascota");
     navigate("/");
@@ -56,13 +62,27 @@ export const PetPage = () => {
   const [confirm, setconfirm] = useState(false);
   const pet = petQuery.data;
 
-
   async function onDelete() {
     deletePetMutation.mutate(petId!);
     navigate("/dashboard/");
     toast.success("Mascota eliminada correctamente", {
       icon: <PawPrintIcon className="h-5 w-5 text-rose-500" />,
     });
+  }
+
+  const { foundPetNotice } = useLostPetNoticeMutation();
+  async function onFoundIt() {
+    await foundPetNotice.mutate({
+      pet,
+    });
+
+    if (!foundPetNotice.isError) {
+      toast.success("Se ha actualizado la publicación de la mascota perdida");
+      setisOpen(false);
+      navigate(`/dashboard/pets/${petId}`);
+      return;
+    }
+    toast.error("Error al crear la actualizar de la mascota perdida");
   }
 
   if (petQuery.isFetching) return <Loading />;
@@ -84,24 +104,6 @@ export const PetPage = () => {
       </>
     );
   }
-  const { foundPetNotice } = useLostPetNoticeMutation();
-
-
-
-  async function onFoundIt() {
-
-    await foundPetNotice.mutate({
-      pet
-    });
-
-    if (!foundPetNotice.isError) {
-      toast.success("Se ha actualizado la publicación de la mascota perdida");
-      setisOpen(false)
-      navigate(`/dashboard/pets/${petId}`)
-      return
-    }
-    toast.error("Error al crear la actualizar de la mascota perdida");
-  }
 
   return (
     <div className="flex flex-col gap-6">
@@ -117,7 +119,6 @@ export const PetPage = () => {
           </CardHeader> */}
           <CardContent className="flex flex-col items-center text-center">
             <div className="flex flex-row items-center gap-5 justify-between">
-
               <div className="flex flex-col items-center">
                 <div className="relative h-32 w-48 mb-4 flex items-center justify-center">
                   <img
@@ -135,8 +136,6 @@ export const PetPage = () => {
                   {pet.species} - {pet.breed}
                 </p>
               </div>
-
-
             </div>
 
             <div className="mt-6 w-full space-y-4">
@@ -186,12 +185,12 @@ export const PetPage = () => {
                   ).toLocaleDateString() === "Invalid Date"
                     ? "Ninguna"
                     : new Date(
-                      pet.medicalRecord.sort(
-                        (a, b) =>
-                          new Date(b.date).getTime() -
-                          new Date(a.date).getTime()
-                      )[0]?.date
-                    ).toLocaleDateString()}
+                        pet.medicalRecord.sort(
+                          (a, b) =>
+                            new Date(b.date).getTime() -
+                            new Date(a.date).getTime()
+                        )[0]?.date
+                      ).toLocaleDateString()}
                 </span>
               </div>
             </div>
@@ -203,7 +202,6 @@ export const PetPage = () => {
                 Editar
               </Button>
             </Link>
-
           </CardFooter>
         </Card>
 
@@ -235,14 +233,17 @@ export const PetPage = () => {
                         </div>
                         <div className="flex items-center justify-between border-b pb-2">
                           <span className="text-sm font-medium">Color</span>
-                          <span className="text-sm">{ }</span>
+                          <span className="text-sm">{}</span>
                         </div>
                         <div className="flex items-center justify-between border-b pb-2">
                           <span className="text-sm font-medium">Estado</span>
                           <Badge
                             variant={!pet.isLost ? "default" : "secondary"}
-                            className={`${!pet.isLost ? "bg-green-600 text-white" : "bg-red-600 text-white"
-                              }`}
+                            className={`${
+                              !pet.isLost
+                                ? "bg-green-600 text-white"
+                                : "bg-red-600 text-white"
+                            }`}
                           >
                             {!pet.isLost ? "En casa" : "Perdido"}
                           </Badge>
@@ -276,8 +277,6 @@ export const PetPage = () => {
                   </div>
 
                   <div className="flex  gap-4">
-
-
                     <div className="w-2/3">
                       <h3 className="text-lg font-medium mb-2 w-fit">
                         Información del Propietario
@@ -285,8 +284,11 @@ export const PetPage = () => {
                       <Card className="p-2">
                         <CardContent className="">
                           <div className="flex items-center gap-4">
-                            <Avatar className="h-15 w-15" >
-                              <AvatarImage src={pet.owner.urlImage} className="object-cover" />
+                            <Avatar className="h-15 w-15">
+                              <AvatarImage
+                                src={pet.owner.urlImage}
+                                className="object-cover"
+                              />
                               <AvatarFallback>
                                 {pet.owner.username?.charAt(0)}
                               </AvatarFallback>
@@ -316,65 +318,61 @@ export const PetPage = () => {
                       <h3 className="text-lg font-medium mb-2 w-fit">
                         Otras Acciones
                       </h3>
-                      {
-                        !pet.isLost
-                          ? (
+                      {!pet.isLost ? (
+                        <Dialog open={isOpen} onOpenChange={setisOpen}>
+                          <DialogTrigger asChild>
+                            <Button
+                              className="flex items-center gap-1 bg-yellow-500  text-white hover:bg-yellow-100 transition-all duration-200 ease-in-out"
+                              variant={"outline"}
+                              onClick={() => {}}
+                            >
+                              <TriangleAlert className="h-4 w-4" />
+                              <span className="hidden lg:inline">
+                                Reportar Perdido
+                              </span>
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="text-center">
+                            <DialogHeader className="flex flex-col items-center">
+                              <PawPrintIcon className="h-8 w-8 text-rose-500" />
 
-                            <Dialog open={isOpen} onOpenChange={setisOpen}>
+                              <DialogTitle>
+                                {" "}
+                                Aviso de perdida de mascota{" "}
+                              </DialogTitle>
+                              <DialogDescription className="text-sm text-muted-foreground text-center">
+                                Entrega todos los detalles de tu mascota perdida
+                                para ayudar a otros a identificarla y
+                                contactarte.
+                              </DialogDescription>
+                            </DialogHeader>
+                            <LostNoticeForm pet={pet} setisOpen={setisOpen} />
+                          </DialogContent>
+                        </Dialog>
+                      ) : (
+                        <div className="flex gap-2">
+                          <Button
+                            className=" bg-green-500  text-white hover:bg-green-100 transition-all duration-200 ease-in-out"
+                            onClick={() => {
+                              onFoundIt();
+                            }}
+                          >
+                            <Home className="h-4 w-4" />
+                            <span className="hidden lg:inline">Encontrado</span>
+                          </Button>
+                          <Button
+                            className="w-fit flex items-center gap-1 bg-yellow-500  text-white hover:bg-green-100 transition-all duration-200 ease-in-out "
+                            onClick={() => {
+                              navigate(`/dashboard/lost-pets/${pet.id}`);
+                            }}
+                            variant={"outline"}
+                          >
+                            <SquareArrowOutUpRight />
+                          </Button>
+                        </div>
+                      )}
 
-
-                              <DialogTrigger asChild>
-                                <Button
-                                  className="flex items-center gap-1 bg-yellow-500  text-white hover:bg-yellow-100 transition-all duration-200 ease-in-out"
-                                  variant={'outline'}
-                                  onClick={() => {
-                                  }}>
-                                  <TriangleAlert className="h-4 w-4" />
-                                  <span className="hidden lg:inline">
-                                    Reportar Perdido
-                                  </span>
-                                </Button>
-
-                              </DialogTrigger>
-                              <DialogContent className="text-center">
-                                <DialogHeader className="flex flex-col items-center">
-                                  <PawPrintIcon className="h-8 w-8 text-rose-500" />
-
-                                  <DialogTitle> Aviso de perdida de mascota </DialogTitle>
-                                  <DialogDescription className="text-sm text-muted-foreground text-center">
-                                    Entrega todos los detalles de tu mascota perdida para ayudar a otros a identificarla y contactarte.
-                                  </DialogDescription>
-                                </DialogHeader>
-                                <LostNoticeForm pet={pet} setisOpen={setisOpen} />
-                              </DialogContent>
-                            </Dialog>
-
-                          )
-                          : (
-                            <div className="flex gap-2">
-                              <Button
-                                className=" bg-green-500  text-white hover:bg-green-100 transition-all duration-200 ease-in-out"
-                                onClick={() => {
-                                  onFoundIt()
-                                }}>
-                                <Home className="h-4 w-4" />
-                                <span className="hidden lg:inline">
-                                  Encontrado
-                                </span>
-                              </Button>
-                              <Button className="w-fit flex items-center gap-1 bg-yellow-500  text-white hover:bg-green-100 transition-all duration-200 ease-in-out "
-                                onClick={() => {
-                                  navigate(`/dashboard/lost-pets/${pet.id}`);
-                                }}
-                                variant={'outline'}>
-                                <SquareArrowOutUpRight />
-                              </Button>
-                            </div>
-
-                          )
-                      }
-
-                      < Button
+                      <Button
                         variant="destructive"
                         className="flex items-center gap-1 transition-all duration-200 ease-in-out"
                         onClick={() => {
@@ -453,6 +451,6 @@ export const PetPage = () => {
           </CardContent>
         </Card>
       </div>
-    </div >
+    </div>
   );
 };
