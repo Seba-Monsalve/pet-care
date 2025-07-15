@@ -42,6 +42,8 @@ export interface LostPetHistory {
   location: string;
   lastSeen: Date;
   reward: number
+  lat: number;
+  lng: number;
 }
 
 interface MedicalRecord {

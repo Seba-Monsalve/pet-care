@@ -21,12 +21,16 @@ import { addLostNoticeSchema } from "../validation/addLostNotice.schema";
 import { useLostPetNoticeMutation } from "../hooks/useLostPetNoticeMutation";
 import { toast } from "sonner";
 import { LostPetHistory } from "../interface/pet.interface";
+import { SearchBox } from "@mapbox/search-js-react";
+import { useState } from "react";
 
 export const LostNoticeForm = ({ pet, setisOpen }: { pet: any, setisOpen: (value: boolean) => void }) => {
     // const { pet } = usePet();
     const { createLostPetNotice } = useLostPetNoticeMutation();
+    const [locationString, setlocationString] = useState(pet.location || "");
 
     const petLostRecord = pet.lostPetHistory.find((record: LostPetHistory) => record.status === "Perdido");
+    const ACCESS_TOKEN = import.meta.env.VITE_MAPBOX_KEY
 
 
     const form = useForm<z.infer<typeof addLostNoticeSchema>>({
@@ -41,10 +45,13 @@ export const LostNoticeForm = ({ pet, setisOpen }: { pet: any, setisOpen: (value
     });
 
     async function onSubmit(values: z.infer<typeof addLostNoticeSchema>) {
+        console.log({ ...values, ...locationString });
         await createLostPetNotice.mutate({
             ...values,
             pet,
-            reward: +(values?.reward ?? 0)
+            reward: +(values?.reward ?? 0),
+            lat: locationString.lat || pet.location?.lat || 0,
+            lng: locationString.lng || pet.location?.lng || 0,
         });
 
         if (!createLostPetNotice.isError) {
@@ -60,7 +67,8 @@ export const LostNoticeForm = ({ pet, setisOpen }: { pet: any, setisOpen: (value
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                 {/* lastSeen */}
 
-                <div className="flex flex-col gap-4 md:flex-row">
+
+                <div className="flex items-center justify-between">
 
                     <FormField
                         control={form.control}
@@ -104,19 +112,18 @@ export const LostNoticeForm = ({ pet, setisOpen }: { pet: any, setisOpen: (value
                             </FormItem>
                         )}
                     />
-                    {/* Lugar */}
+                    {/* reward */}
                     <FormField
                         control={form.control}
-                        name="location"
+                        name="reward"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Lugar</FormLabel>
+                                <FormLabel>Recompensa</FormLabel>
                                 <FormControl>
                                     <Input
-                                        placeholder="Centro"
+                                        placeholder="$ 1200"
                                         {...field}
-                                        type="text"
-                                        min={1}
+                                        type="number"
                                     />
                                 </FormControl>
                                 <FormMessage />
@@ -124,6 +131,54 @@ export const LostNoticeForm = ({ pet, setisOpen }: { pet: any, setisOpen: (value
                         )}
                     />
                 </div>
+
+
+                {/* Lugar */}
+                {/* <FormField
+                    control={form.control}
+                    name="location"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Lugar</FormLabel>
+                            <FormControl>
+                                <Input
+                                    placeholder="Centro"
+                                    {...field}
+                                    type="text"
+                                    min={1}
+                                />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                /> */}
+
+                <FormField
+                    control={form.control}
+                    name="location"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Lugar</FormLabel>
+                            <SearchBox
+                                accessToken={ACCESS_TOKEN}
+                                onRetrieve={(e) => {
+                                    const address = e.features[0].properties.full_address;
+                                    setlocationString({
+                                        lat: e.features[0].geometry.coordinates[1] ?? 0,
+                                        lng: e.features[0].geometry.coordinates[0] ?? 0,
+                                    });
+                                    field.onChange(address);
+                                }}
+                                value={field.value}
+                                placeholder="Ingresa tu dirección"
+                            />
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+
+
+
 
                 {/* descscription */}
                 <FormField
@@ -144,26 +199,13 @@ export const LostNoticeForm = ({ pet, setisOpen }: { pet: any, setisOpen: (value
                     )}
                 />
 
-                {/* reward */}
-                <FormField
-                    control={form.control}
-                    name="reward"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Recompensa</FormLabel>
-                            <FormControl>
-                                <Input
-                                    placeholder="$ 1200"
-                                    {...field}
-                                    type="number"
-                                />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
+
                 <Button type="submit" >Aceptar</Button>
+
+                {JSON.stringify(form.getValues())}
+                {JSON.stringify(form.getFieldState("location"))}
+
             </form>
-        </Form>
+        </Form >
     );
 };

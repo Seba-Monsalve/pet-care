@@ -19,24 +19,24 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(
   cors({
-    origin: `${process.env.FRONTEND_URL}`, // tu frontend
+    origin: `${process.env.FRONTEND_URL}`,
     credentials: true,
   })
 );
 
 const PORT = process.env.PORT || 3000;
 
-const __dirname = path.resolve();
+const auxDirname = path.resolve();
 
 app.use("/api/auth", authRoutes);
 app.use("/api/pets", authenticateToken, petRoutes);
 app.use("/api/lost-pets", authenticateToken, lostPetRouter);
 app.use("/api/seed", authenticateToken, seedRoutes);
 
-app.use(express.static(path.join(__dirname, "../frontend/dist")));
+app.use(express.static(path.join(auxDirname, "../frontend/dist")));
 
 app.all("/{*any}", (req: Request, res: Response) => {
-  res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
+  res.sendFile(path.join(auxDirname, "../frontend/dist/index.html"));
 });
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {

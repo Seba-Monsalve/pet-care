@@ -76,7 +76,11 @@ export default function DashboardLayout() {
               </Button>
             </div>
             {/* search */}
-            <Button variant="ghost" className="w-full justify-start" onClick={() => navigate("/dashboard/lost-pets")}>
+            <Button
+              variant="ghost"
+              className="w-full justify-start"
+              onClick={() => navigate("/dashboard/lost-pets")}
+            >
               <TriangleAlertIcon className="mr-2 h-5 w-5" />
               Mascotas Perdidas
             </Button>

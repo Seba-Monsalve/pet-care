@@ -57,6 +57,8 @@ model LostPetHistory {
   reward      Int?
   status      LostStatus
   foundAt     DateTime?  @db.Timestamp(6)
+  lat       Float?
+  lng       Float?
 }
 
 enum LostStatus {

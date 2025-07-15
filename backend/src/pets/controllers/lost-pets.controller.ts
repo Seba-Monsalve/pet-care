@@ -74,6 +74,8 @@ export class LostPetController {
                             lastSeen: true,
                             description: true,
                             foundAt: true,
+                            lat: true,
+                            lng: true,
                         }
                     }
                 }

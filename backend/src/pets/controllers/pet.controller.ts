@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import prisma from "../../../prisma-client";
-import { ERROR_MESSAGES, verifyToken } from "../../utils";
+import { ERROR_MESSAGES, } from "../../utils";
 
 export class PetController {
   static getPets = async (
